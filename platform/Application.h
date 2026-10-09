@@ -1,13 +1,17 @@
 #pragma once
 
-#include <memory>
+#include "PrivateApplication.h"
+
+#include "IWidget.h"
+
 
 class Application {
 public:
     Application();
-    ~Application();
+
+    static void addTopLevelWidget(IWidget* widget) {
+        PrivateApplication::instance().addTopLevelWidget(widget);
+    }
+
     void run();
-private:
-    struct Impl;
-    std::unique_ptr<Impl> m_impl;
 };

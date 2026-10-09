@@ -1,10 +1,12 @@
 #include "platform/Application.h"
-#include "platform/Window.h"
+#include "ui/Widget.h"
+
 
 int main(int argc, char* argv[]) {
     Application app;
 
-    Window window;
+    Widget widget;
+    widget.display();
 
     app.run();
 

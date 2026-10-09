@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "PrivateApplication.h"
 
 #include <AppKit/AppKit.h>
 #include <memory>
@@ -28,19 +28,19 @@
 
 @end
 
-struct Application::Impl {
+struct PrivateApplication::Impl {
     NSApplication* m_app;
     id<NSApplicationDelegate> m_app_delegate;
 };
 
-Application::Application() : m_impl(std::make_unique<Impl>()) {
+PrivateApplication::PrivateApplication() : m_impl(std::make_unique<Impl>()) {
     m_impl->m_app = [NSApplication sharedApplication];
     m_impl->m_app_delegate = [[AppDelegate alloc] init];
     [m_impl->m_app setDelegate:m_impl->m_app_delegate];
     [m_impl->m_app setActivationPolicy:NSApplicationActivationPolicy::NSApplicationActivationPolicyRegular];
 }
 
-void Application::run() {
+void PrivateApplication::run() {
     [m_impl->m_app run];
 }
-Application::~Application() = default;
+PrivateApplication::~PrivateApplication() = default;

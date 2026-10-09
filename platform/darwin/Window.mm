@@ -21,6 +21,9 @@ Window::Window() : m_impl(std::make_unique<Impl>()) {
     m_impl->m_window = [[NSWindow alloc] initWithContentRect:content_rect styleMask:style_mask backing:NSBackingStoreBuffered defer:NO];
     m_impl->m_window_delegate = [[WindowDelegate alloc] init];
     [m_impl->m_window setDelegate:m_impl->m_window_delegate];
+}
+
+void Window::display() {
     [m_impl->m_window makeKeyAndOrderFront:m_impl->m_window];
 }
 

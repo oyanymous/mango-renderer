@@ -16,15 +16,24 @@ There are no tests or lint configuration yet. The top-level `build/` directory (
 
 ## Architecture
 
-Early-stage macOS renderer. Currently only a platform layer exists: `main.cpp` creates an `Application` and a `Window`, then calls `app.run()` (blocks in the Cocoa run loop).
+Early-stage macOS renderer. `main.cpp` creates an `Application` and a top-level `Widget`, then calls `app.run()` (blocks in the Cocoa run loop).
 
-- **`platform/`** — static library target `Platform`, linked by `main`.
-  - Public headers (`Application.h`, `Window.h`) are plain C++ and use the **pimpl idiom** (`struct Impl; std::unique_ptr<Impl> m_impl;`) so no Objective-C/AppKit types leak into C++ translation units.
+Three library targets, with dependencies flowing `UI → Platform → Core`:
+
+- **`core/`** — header-only `INTERFACE` target `Core`. Holds abstract interfaces shared across layers (e.g. `IWidget`), so `platform/` can refer to widgets without depending on `ui/`.
+- **`platform/`** — static library target `Platform` (links `Core` and Cocoa publicly).
+  - `Application` is a thin public facade over the `PrivateApplication` singleton, which owns the list of top-level `IWidget*`s and the native app state. Constructing `Application` initializes `[NSApplication sharedApplication]`, so it must come before any `Window` or `Widget`.
+  - Classes holding native state (`PrivateApplication`, `Window`) use the **pimpl idiom** (`struct Impl; std::unique_ptr<Impl> m_impl;`) so their headers stay plain C++ and no Objective-C/AppKit types leak into C++ translation units.
   - Platform-specific implementations live in per-OS subdirectories; `platform/darwin/*.mm` are Objective-C++ files that define `Impl` with AppKit objects (`NSApplication`, `NSWindow`, delegate classes). New OS backends would follow the same pattern alongside `darwin/`.
-  - The project enables the `OBJCXX` language in the root `CMakeLists.txt`; Cocoa is linked publicly via `-framework Cocoa`.
-- `Platform`'s include directory is `PRIVATE`, so consumers include headers by repo-relative path (`#include "platform/Window.h"`), while files inside `platform/` include them bare (`#include "Window.h"`).
+  - The project enables the `OBJCXX` language in the root `CMakeLists.txt`.
+- **`ui/`** — static library target `UI` (links `Platform` and `Core`). `Widget` implements `IWidget`; a parentless `Widget` registers itself via `Application::addTopLevelWidget`. Also holds geometry/value types (`Point`, `Size`, `Rect`, `Line`, `Polygon`, `Color`).
 - ARC is not enabled (no `-fobjc-arc`), so Objective-C objects in `.mm` files are under manual reference counting.
-- `Application` must be constructed before any `Window`, since it initializes `[NSApplication sharedApplication]`.
+
+### Include style
+
+Each library exports **its own directory** as its include path (`Core` via `INTERFACE`, `Platform` via `PUBLIC`), so headers are included **bare**, without a module prefix, both inside and across modules: `#include "IWidget.h"`, `#include "Window.h"`, `#include "Application.h"`. A `"platform/..."` or `"core/..."` path will not resolve from another module. When adding a new library, export its own directory the same way. Header names must therefore be unique across modules.
+
+`main.cpp` is the exception: it uses `"platform/Application.h"` / `"ui/Widget.h"`, which resolve only because it sits at the repo root and quoted includes search the including file's directory first.
 
 ## Conventions
 
