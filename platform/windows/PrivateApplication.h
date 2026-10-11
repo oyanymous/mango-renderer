@@ -1,12 +1,10 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-
-#include "IWidget.h"
+#include "BaseApplication.h"
 
 
-class PrivateApplication {
+class PrivateApplication : public BaseApplication
+{
 public:
     PrivateApplication(const PrivateApplication&) = delete;
     PrivateApplication& operator=(const PrivateApplication&) = delete;
@@ -18,19 +16,8 @@ public:
         return instance;
     }
 
-    void addTopLevelWidget(IWidget* widget) {
-        m_top_level_widgets.push_back(widget);
-    }
-
-    [[nodiscard]] std::vector<IWidget*> topLevelWidgets() { return m_top_level_widgets; }
-
-    void run();
+    void run() override;
 private:
-    struct Impl;
-    std::unique_ptr<Impl> m_impl;
-
-    std::vector<IWidget*> m_top_level_widgets;
-
     PrivateApplication();
     ~PrivateApplication();
 };
