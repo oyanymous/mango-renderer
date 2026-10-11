@@ -1,8 +1,13 @@
-#include "PrivateApplication.h"
+#include "../PrivateApplication.h"
 
 #include <windows.h>
 
-PrivateApplication::PrivateApplication() = default;
+struct PrivateApplication::Impl {
+};
+
+PrivateApplication::PrivateApplication() : m_impl(std::make_unique<Impl>()){
+
+}
 
 PrivateApplication::~PrivateApplication() = default;
 

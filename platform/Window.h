@@ -6,7 +6,7 @@
 
 class Window: public BaseWindow {
 public:
-    explicit Window(std::string window_title = "");
+    explicit Window(const std::string& window_title = "");
     ~Window() override;
 
     void display() override;

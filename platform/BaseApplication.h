@@ -19,6 +19,4 @@ public:
     virtual void run() = 0;
 private:
     std::vector<IWidget*> m_top_level_widgets;
-
-
 };

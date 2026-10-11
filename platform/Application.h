@@ -1,6 +1,6 @@
 #pragma once
 
-#include "windows/PrivateApplication.h"
+#include "PrivateApplication.h"
 
 #include "IWidget.h"
 

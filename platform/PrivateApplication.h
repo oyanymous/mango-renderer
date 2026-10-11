@@ -18,6 +18,8 @@ public:
 
     void run() override;
 private:
+    struct Impl;
+    std::unique_ptr<Impl> m_impl;
     PrivateApplication();
-    ~PrivateApplication();
+    ~PrivateApplication() override;
 };

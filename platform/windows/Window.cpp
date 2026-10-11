@@ -39,7 +39,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-Window::Window(std::string window_title) : m_window_title(std::move(window_title)), m_impl(std::make_unique<Impl>()) {
+Window::Window(const std::string& window_title) : m_window_title(std::move(window_title)), m_impl(std::make_unique<Impl>()) {
     m_impl->m_classname = L"Mango Window";
     m_impl->m_hinstance = GetModuleHandle(nullptr);
     m_impl->m_wndclass = createWindowClass(m_impl->m_hinstance, WindowProc, m_impl->m_classname);

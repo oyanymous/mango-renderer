@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "PrivateApplication.h"
 
 Application::Application() {
     // Force NSApplication setup before any window is created.

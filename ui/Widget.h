@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IWidget.h"
-#include "windows/Window.h"
+#include "../platform/Window.h"
 
 
 class Widget: public IWidget {

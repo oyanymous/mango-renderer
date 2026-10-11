@@ -40,7 +40,8 @@ PrivateApplication::PrivateApplication() : m_impl(std::make_unique<Impl>()) {
     [m_impl->m_app setActivationPolicy:NSApplicationActivationPolicy::NSApplicationActivationPolicyRegular];
 }
 
+PrivateApplication::~PrivateApplication() = default;
+
 void PrivateApplication::run() {
     [m_impl->m_app run];
 }
-PrivateApplication::~PrivateApplication() = default;
