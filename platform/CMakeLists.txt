@@ -7,6 +7,7 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(PLATFORM_FILES
         windows/PrivateApplication.cpp
         windows/Window.cpp
+        windows/win32_helpers.h
         windows/win32_helpers.cpp)
 endif ()
 
