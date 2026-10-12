@@ -2,6 +2,8 @@
 
 #include "BaseApplication.h"
 
+#include <memory>
+
 
 class PrivateApplication : public BaseApplication
 {

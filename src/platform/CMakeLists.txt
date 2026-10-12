@@ -1,9 +1,9 @@
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+if (APPLE)
     set(PLATFORM_FILES
         darwin/PrivateApplication.mm
         darwin/Window.mm)
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+elseif (WIN32)
     set(PLATFORM_FILES
         windows/PrivateApplication.cpp
         windows/Window.cpp
@@ -20,9 +20,9 @@ add_library(Platform
     PrivateApplication.h
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+if (APPLE)
     target_link_libraries(Platform PUBLIC "-framework Cocoa" Core)
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+elseif (WIN32)
     target_link_libraries(Platform PUBLIC user32 Core)
 endif ()
 

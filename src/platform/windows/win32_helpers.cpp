@@ -14,10 +14,10 @@ WNDCLASSW createWindowClass(const HINSTANCE& hInstance, const WNDPROC& wndProc, 
 
 HWND createWindow(const HINSTANCE& hInstance, const LPCWSTR& className, const LPCWSTR& windowTitle) {
     HWND hwnd = CreateWindowExW(
-        0,                              // Optional window styles.
+        0,                             // Optional window styles.
         className,                     // Window class
-        windowTitle,    // Window text
-        WS_OVERLAPPEDWINDOW,            // Window style
+        windowTitle,                   // Window text
+        WS_OVERLAPPEDWINDOW,           // Window style
 
         // Size and position
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
