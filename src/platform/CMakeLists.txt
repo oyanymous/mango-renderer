@@ -17,11 +17,12 @@ add_library(Platform
     Application.cpp
     BaseApplication.h
     Window.h
+    NativeSurfaceHandle.h
     PrivateApplication.h
 )
 
 if (APPLE)
-    target_link_libraries(Platform PUBLIC "-framework Cocoa" Core)
+    target_link_libraries(Platform PUBLIC "-framework Cocoa" "-framework QuartzCore" Core)
 elseif (WIN32)
     target_link_libraries(Platform PUBLIC user32 Core)
 endif ()
