@@ -12,7 +12,18 @@ cmake --build --preset macos
 ./build/macos/main
 ```
 
-There are no tests or lint configuration yet. The top-level `build/` directory (outside `build/macos/`) holds stale output from an earlier non-preset configure (e.g. an old `Renderer` target) — ignore it.
+There are no tests yet.
+
+## Formatting & git hooks
+
+Code style is defined by `.clang-format` (4-space indent, attached braces, `Type* ptr`, 120 columns). Format with `clang-format -i <files>`.
+
+Configuring CMake sets `core.hooksPath` to `.githooks/` (or run `git config core.hooksPath .githooks` by hand):
+
+- `commit-msg` rejects messages that are not Conventional Commits (see Conventions).
+- `pre-commit` runs clang-format on the staged C/C++/ObjC++ files: a file is reformatted and re-staged automatically, unless it also has unstaged changes, in which case the commit is rejected. clang-format comes from `$CLANG_FORMAT`, `PATH`, a CLion install, or Homebrew LLVM. If none is found, any commit that includes C++ files is rejected.
+
+Hook scripts must keep LF line endings (enforced by `.gitattributes`) and the executable bit. The top-level `build/` directory (outside `build/macos/`) holds stale output from an earlier non-preset configure (e.g. an old `Renderer` target) — ignore it.
 
 ## Architecture
 

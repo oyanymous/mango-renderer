@@ -1,0 +1,37 @@
+#!/bin/sh
+# Rejects commit messages whose header does not follow Conventional Commits:
+#   <type>(<optional scope>)!: <description>
+# See https://www.conventionalcommits.org/ and CLAUDE.md.
+# Bypass in an emergency with `git commit --no-verify`.
+
+msg_file="$1"
+
+# First line that is neither a comment nor blank (git strips comments later).
+header=$(tr -d '\r' < "$msg_file" | grep -v '^#' | grep -v '^[[:space:]]*$' | head -n 1)
+
+# Messages git generates itself are allowed as-is.
+case "$header" in
+    "Merge "* | "Revert \""* | "fixup! "* | "squash! "* | "amend! "*)
+        exit 0
+        ;;
+esac
+
+types='feat|fix|refactor|build|docs|chore|test|perf|style|ci|revert'
+pattern="^($types)(\([a-z0-9._/-]+\))?!?: [^[:space:]].*$"
+
+if printf '%s\n' "$header" | grep -Eq "$pattern"; then
+    exit 0
+fi
+
+cat >&2 <<EOF
+commit-msg: the commit message does not follow Conventional Commits.
+
+    $header
+
+Expected:  <type>(<optional scope>): <description>
+Types:     $(printf '%s' "$types" | sed 's/|/, /g')
+Breaking:  add '!' before the colon, e.g. 'feat(platform)!: drop Window::show'
+Examples:  feat(platform): add window resize callback
+           fix(darwin): release window delegate
+EOF
+exit 1

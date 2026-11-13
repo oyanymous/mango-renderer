@@ -1,0 +1,89 @@
+#!/bin/sh
+# Ensures every staged C/C++/Objective-C++ file matches .clang-format.
+#
+# The staged content (not the working copy) is checked. A file that needs
+# formatting is reformatted and re-staged automatically when it has no
+# unstaged changes; otherwise the commit is rejected so unrelated edits are
+# never staged behind your back.
+#
+# clang-format is taken from $CLANG_FORMAT, then PATH, then a CLion or
+# Homebrew install. Bypass in an emergency with `git commit --no-verify`.
+
+find_clang_format() {
+    if [ -n "$CLANG_FORMAT" ]; then
+        printf '%s\n' "$CLANG_FORMAT"
+        return 0
+    fi
+    if command -v clang-format >/dev/null 2>&1; then
+        command -v clang-format
+        return 0
+    fi
+    for candidate in \
+        "/c/Program Files/JetBrains/CLion"*/plugins/clion-radler/DotFiles/windows-x64/clang-format.exe \
+        "/Applications/CLion"*.app/Contents/plugins/clion-radler/DotFiles/*/clang-format \
+        /opt/homebrew/opt/llvm/bin/clang-format \
+        /usr/local/opt/llvm/bin/clang-format; do
+        if [ -x "$candidate" ]; then
+            printf '%s\n' "$candidate"
+            return 0
+        fi
+    done
+    return 1
+}
+
+files=$(git diff --cached --name-only --diff-filter=ACMR |
+    grep -E '\.(h|hh|hpp|hxx|inl|ipp|c|cc|cpp|cxx|m|mm)$')
+[ -z "$files" ] && exit 0
+
+if ! clang_format=$(find_clang_format); then
+    cat >&2 <<EOF
+pre-commit: clang-format not found, so staged C++ files cannot be checked.
+Install it (e.g. 'brew install clang-format', or LLVM on Windows) or point
+CLANG_FORMAT at an existing binary, then commit again.
+EOF
+    exit 1
+fi
+
+tmp_dir=$(mktemp -d) || exit 1
+trap 'rm -rf "$tmp_dir"' EXIT
+
+reformatted=""
+rejected=""
+
+# Newline-separated list; file names containing newlines are not supported.
+while IFS= read -r file; do
+    git show ":$file" > "$tmp_dir/staged" || exit 1
+    "$clang_format" --style=file --assume-filename="$file" < "$tmp_dir/staged" > "$tmp_dir/formatted" || exit 1
+    if cmp -s "$tmp_dir/staged" "$tmp_dir/formatted"; then
+        continue
+    fi
+
+    if git diff --quiet -- "$file"; then
+        # Working copy equals the staged version, so formatting it in place
+        # and re-staging changes nothing but formatting.
+        "$clang_format" -i --style=file "$file" && git add -- "$file" || exit 1
+        reformatted="$reformatted
+    $file"
+    else
+        rejected="$rejected
+    $file"
+    fi
+done <<EOF
+$files
+EOF
+
+if [ -n "$reformatted" ]; then
+    printf 'pre-commit: reformatted and re-staged with clang-format:%s\n' "$reformatted" >&2
+fi
+
+if [ -n "$rejected" ]; then
+    cat >&2 <<EOF
+pre-commit: these files are not formatted and also have unstaged changes:$rejected
+
+Format them, review, stage, and commit again:
+    "$clang_format" -i <files>
+EOF
+    exit 1
+fi
+
+exit 0
