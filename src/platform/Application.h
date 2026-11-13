@@ -9,9 +9,7 @@ class Application {
 public:
     Application();
 
-    static void addTopLevelWidget(IWidget* widget) {
-        PrivateApplication::instance().addTopLevelWidget(widget);
-    }
+    static void addTopLevelWidget(IWidget* widget) { PrivateApplication::instance().addTopLevelWidget(widget); }
 
     void run();
 };

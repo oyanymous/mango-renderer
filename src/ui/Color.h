@@ -19,4 +19,3 @@ public:
 private:
     int m_r, m_g, m_b, m_a;
 };
-

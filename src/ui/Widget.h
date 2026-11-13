@@ -1,10 +1,10 @@
 #pragma once
 
-#include "IWidget.h"
 #include "../platform/Window.h"
+#include "IWidget.h"
 
 
-class Widget: public IWidget {
+class Widget : public IWidget {
 public:
     explicit Widget(Widget* parent = nullptr);
     [[nodiscard]] bool isTopLevel() const { return m_parent == nullptr; }

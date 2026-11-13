@@ -12,14 +12,9 @@ public:
     void setX(int _x) { m_x = _x; }
     void setY(int _y) { m_y = _y; }
 
-    Point operator+(const Point& other) const {
-        return Point(m_x + other.m_x, m_y + other.m_y);
-    }
+    Point operator+(const Point& other) const { return Point(m_x + other.m_x, m_y + other.m_y); }
 
-    Point operator-(const Point& other) const {
-        return Point(m_x - other.m_x, m_y - other.m_y);
-    }
+    Point operator-(const Point& other) const { return Point(m_x - other.m_x, m_y - other.m_y); }
 private:
     int m_x, m_y;
 };
-

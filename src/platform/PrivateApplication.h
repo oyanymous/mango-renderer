@@ -5,8 +5,7 @@
 #include <memory>
 
 
-class PrivateApplication : public BaseApplication
-{
+class PrivateApplication : public BaseApplication {
 public:
     PrivateApplication(const PrivateApplication&) = delete;
     PrivateApplication& operator=(const PrivateApplication&) = delete;

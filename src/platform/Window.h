@@ -4,7 +4,7 @@
 
 #include "BaseWindow.h"
 
-class Window: public BaseWindow {
+class Window : public BaseWindow {
 public:
     explicit Window(const std::string& window_title = "");
     ~Window() override;

@@ -4,5 +4,5 @@ class IWidget {
 public:
     virtual ~IWidget() = default;
 
-    virtual void display() = 0;;
+    virtual void display() = 0;
 };

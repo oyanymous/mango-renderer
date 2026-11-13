@@ -17,29 +17,27 @@ struct Window::Impl {
     LPCWSTR m_classname;
 };
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
 
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
 
-            FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
+        FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
 
-            EndPaint(hwnd, &ps);
-        }
-    return 0;
+        EndPaint(hwnd, &ps);
+    }
+        return 0;
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-Window::Window(const std::string& window_title) : m_window_title(std::move(window_title)), m_impl(std::make_unique<Impl>()) {
+Window::Window(const std::string& window_title)
+    : m_window_title(std::move(window_title)), m_impl(std::make_unique<Impl>()) {
     m_impl->m_classname = L"Mango Window";
     m_impl->m_hinstance = GetModuleHandle(nullptr);
     m_impl->m_wndclass = createWindowClass(m_impl->m_hinstance, WindowProc, m_impl->m_classname);

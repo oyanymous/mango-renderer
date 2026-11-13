@@ -9,20 +9,20 @@
 
 @interface AppDelegate ()
 
-@property (strong) IBOutlet NSWindow *window;
+@property (strong) IBOutlet NSWindow* window;
 @end
 
 @implementation AppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationDidFinishLaunching:(NSNotification*)aNotification {
 }
 
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification {
+- (void)applicationWillTerminate:(NSNotification*)aNotification {
 }
 
 
-- (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)app {
+- (BOOL)applicationSupportsSecureRestorableState:(NSApplication*)app {
     return YES;
 }
 
