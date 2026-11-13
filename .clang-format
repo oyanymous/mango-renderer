@@ -1,0 +1,101 @@
+# Formatting rules derived from the existing code in src/.
+# Run: clang-format -i <files>   (applies to .h, .cpp and .mm)
+#
+# The first section has no `Language:` key, so it is the base for every language.
+# This matters because clang-format may detect plain C++ `.h` headers as ObjC
+# when the repo contains `.mm` files; both must format identically.
+---
+BasedOnStyle: LLVM
+Standard: c++20
+
+# Indentation: 4 spaces, no tabs; `public:`/`private:` flush with `class`.
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+AccessModifierOffset: -4
+IndentCaseLabels: false
+NamespaceIndentation: None
+IndentPPDirectives: None
+
+# Line length: existing code is mostly under 120 columns.
+ColumnLimit: 120
+
+# Braces: attached (K&R) everywhere: `class Foo {`, `void f() {`, `if (x) {`.
+BreakBeforeBraces: Attach
+
+# Short accessors stay on one line inside the class body:
+#   [[nodiscard]] int x() const { return m_x; }
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortBlocksOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortLambdasOnASingleLine: All
+
+# Pointers and references bind to the type: `Widget* parent`, `const std::string& title`.
+PointerAlignment: Left
+ReferenceAlignment: Pointer
+DerivePointerAlignment: false
+
+# Constructor initializers stay on the signature line while they fit,
+# otherwise break before the colon and pack them onto the next line.
+BreakConstructorInitializers: BeforeColon
+PackConstructorInitializers: NextLine
+ConstructorInitializerIndentWidth: 4
+
+# Inheritance: `class Window : public BaseWindow`.
+SpaceBeforeInheritanceColon: true
+BreakInheritanceList: BeforeColon
+
+# Function arguments/parameters: fill the line, then wrap and indent.
+AlignAfterOpenBracket: Align
+BinPackArguments: true
+BinPackParameters: true
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+
+# Keep `[[nodiscard]]` and `template <...>` handling simple.
+AlwaysBreakTemplateDeclarations: Yes
+BreakAfterAttributes: Never
+
+# Spacing.
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyBlock: false
+SpacesInParentheses: false
+SpaceBeforeCpp11BracedList: false
+Cpp11BracedListStyle: true
+
+# Trailing comments line up (see win32_helpers.cpp).
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 0
+SpacesBeforeTrailingComments: 1
+ReflowComments: true
+
+# Up to two blank lines are kept (used between includes and the first declaration);
+# no blank line is inserted before `private:`.
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+EmptyLineBeforeAccessModifier: Never
+SeparateDefinitionBlocks: Leave
+
+# Includes: sorted within each blank-line-separated group, groups left as written
+# (platform headers such as <windows.h> must stay where they are).
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+InsertNewlineAtEOF: true
+FixNamespaceComments: true
+---
+Language: Cpp
+---
+# Inherits everything above; only ObjC-specific options here.
+Language: ObjC
+# `@property (strong)`, `NSObject <NSApplicationDelegate>`.
+ObjCSpaceAfterProperty: true
+ObjCSpaceBeforeProtocolList: true
+ObjCBlockIndentWidth: 4
+ObjCBreakBeforeNestedBlockParam: true
+...
